@@ -6,18 +6,15 @@ export default function NextNameApp() {
   const [isHovered, setIsHovered] = useState<string | false>(false);
   const [isFocused, setIsFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [showResults, setShowResults] = useState(false);
 
   const handleSubmit = useCallback(() => {
     if (inputValue.trim() && !isLoading) {
       setIsLoading(true);
-      setShowResults(false);
       
       // Simulando análise de disponibilidade
       setTimeout(() => {
         console.log('Analisando disponibilidade para:', inputValue);
         setIsLoading(false);
-        setShowResults(true);
       }, 2000);
     }
   }, [inputValue, isLoading]);
@@ -28,11 +25,6 @@ export default function NextNameApp() {
       handleSubmit();
     }
   }, [handleSubmit]);
-
-  const generateAlternatives = useCallback(() => {
-    console.log('Gerando nomes alternativos para:', inputValue);
-    // TODO: Implementar geração de nomes alternativos
-  }, [inputValue]);
 
   return (
     <div className="min-h-screen relative overflow-hidden" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
@@ -239,55 +231,7 @@ export default function NextNameApp() {
             }
           </p>
 
-          {/* Results Section */}
-          {showResults && (
-            <div className="mt-8 animate-fadeIn">
-              <div 
-                className="rounded-2xl p-6 border transition-all duration-300"
-                style={{
-                  backgroundColor: 'rgba(47, 51, 56, 0.6)',
-                  backdropFilter: 'blur(10px)',
-                  borderColor: 'rgba(113, 128, 150, 0.3)'
-                }}
-              >
-                <h2 className="text-2xl font-bold text-slate-50 mb-4">
-                  Análise de Disponibilidade: {inputValue}
-                </h2>
-                
-                <div className="grid md:grid-cols-3 gap-4 mb-6">
-                  <div className="bg-green-500 bg-opacity-20 rounded-lg p-4 border border-green-500 border-opacity-30">
-                    <h3 className="text-green-400 font-semibold mb-2">Domínios</h3>
-                    <p className="text-sm text-slate-300">.com disponível</p>
-                  </div>
-                  <div className="bg-yellow-500 bg-opacity-20 rounded-lg p-4 border border-yellow-500 border-opacity-30">
-                    <h3 className="text-yellow-400 font-semibold mb-2">Marcas Registradas</h3>
-                    <p className="text-sm text-slate-300">2 similares encontradas</p>
-                  </div>
-                  <div className="bg-red-500 bg-opacity-20 rounded-lg p-4 border border-red-500 border-opacity-30">
-                    <h3 className="text-red-400 font-semibold mb-2">Redes Sociais</h3>
-                    <p className="text-sm text-slate-300">Instagram indisponível</p>
-                  </div>
-                </div>
-                
-                <button 
-                  className="w-full font-medium py-3 px-6 rounded-lg transition-colors duration-200"
-                  style={{
-                    backgroundColor: '#5DADE2',
-                    color: 'white'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#4A90C2';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = '#5DADE2';
-                  }}
-                  onClick={generateAlternatives}
-                >
-                  Gerar Nomes Alternativos
-                </button>
-              </div>
-            </div>
-          )}
+
         </div>
       </div>
       
@@ -384,21 +328,6 @@ export default function NextNameApp() {
           100% { 
             transform: translate(0px, 0px); 
           }
-        }
-        
-        @keyframes fadeIn {
-          from { 
-            opacity: 0; 
-            transform: translateY(20px); 
-          }
-          to { 
-            opacity: 1; 
-            transform: translateY(0); 
-          }
-        }
-        
-        .animate-fadeIn {
-          animation: fadeIn 0.5s ease-out;
         }
         
         @keyframes spin {
