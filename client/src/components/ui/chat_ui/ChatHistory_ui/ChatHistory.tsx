@@ -154,6 +154,72 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
             </div>
           </div>
 
+          {/* Resposta da AI com demonstração dos componentes */}
+          <div className="text-cream text-left leading-relaxed text-lg">
+            <p className="mb-4">
+              Ótima pergunta! Vou mostrar como funciona nossa análise completa. Começando pela verificação de domínio:
+            </p>
+            
+            {/* Componente de verificação de domínio - sempre ativo para demonstração */}
+            <div className="my-6">
+              <DomainAvailabilityChecker
+                brandName="TechFlow"
+                autoStart={true}
+                isActive={true}
+                onStatusChange={(status) => console.log('Domain status:', status)}
+              />
+            </div>
+            
+            <p className="mb-4">
+              Agora verificando marcas registradas nos principais órgãos:
+            </p>
+            
+            {/* Componente de verificação de marcas - sempre ativo para demonstração */}
+            <div className="my-6">
+              <TrademarkChecker
+                brandName="TechFlow"
+                autoStart={true}
+                isActive={true}
+                onStatusChange={(status) => console.log('Trademark status:', status)}
+              />
+            </div>
+            
+            <p className="mb-4">
+              E verificando disponibilidade nas redes sociais:
+            </p>
+            
+            {/* Componente de verificação de redes sociais - sempre ativo para demonstração */}
+            <div className="my-6">
+              <UsernameAvailabilityChecker
+                brandName="TechFlow"
+                autoStart={true}
+                isActive={true}
+                onStatusChange={(status) => console.log('Username status:', status)}
+              />
+            </div>
+            
+            <p className="mb-4">
+              Aqui está o resumo completo da análise:
+            </p>
+            
+            {/* Componente de resumo - sempre ativo para demonstração */}
+            <div className="my-6">
+              <AnalysisSummary
+                brandName="TechFlow"
+                isVisible={true}
+                customTitle="Resumo da Análise Completa"
+              />
+            </div>
+            
+            <p className="mb-4">
+              Esses são os componentes que uso para fazer a análise completa. Você pode testá-los enviando mensagens como:
+              <br/>• "verificar domínio [nome]"
+              <br/>• "verificar marca [nome]"
+              <br/>• "verificar redes sociais [nome]"
+              <br/>• "análise completa [nome]"
+            </p>
+          </div>
+
           {/* Renderização dinâmica de mensagens */}
           {messages.map((message: Message, index: number) => (
             <div key={index}>

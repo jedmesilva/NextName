@@ -65,40 +65,111 @@ const MainChat: React.FC = () => {
   });
 
   const handleSendMessage = (message: string): void => {
-    // Aqui você pode implementar a lógica para enviar mensagens
     console.log('Mensagem enviada:', message);
     
-    // Exemplo: adicionar mensagem do usuário ao histórico
+    // Adicionar mensagem do usuário ao histórico
     setMessages(prev => [...prev, { text: message, sender: 'user' }]);
     
-    // Exemplo: simular resposta da AI com componentes de análise
+    // Atualizar o nome da marca baseado na mensagem
+    setBrandName(message);
+    
+    // Simular diferentes tipos de resposta baseado no conteúdo da mensagem
+    const lowerMessage = message.toLowerCase();
+    
     setTimeout(() => {
-      const aiResponse: Message = {
-        text: `Analisando a disponibilidade do nome "${message}"...`,
-        sender: 'ai',
-        showDomainChecker: true,
-        showTrademarkChecker: true,
-        showUsernameChecker: true,
-        showAnalysisSummary: true,
-        domainData: {
-          brandName: message,
-          // dados específicos do domínio
-        },
-        trademarkData: {
-          brandName: message,
-          // dados específicos da marca
-        },
-        usernameData: {
-          brandName: message,
-          // dados específicos do username
-        },
-        summaryData: {
-          brandName: message,
-          // dados do resumo da análise
-        }
-      };
+      let aiResponse: Message;
+      
+      if (lowerMessage.includes('domínio') || lowerMessage.includes('domain')) {
+        // Resposta com verificação de domínio
+        aiResponse = {
+          text: `Perfeito! Vou verificar a disponibilidade do domínio para "${message}". Iniciando análise:`,
+          sender: 'ai',
+          showDomainChecker: true,
+          domainData: {
+            brandName: message,
+            autoStart: true,
+            isActive: true,
+            onStatusChange: (status: string) => {
+              setCurrentStep(`Domain status: ${status}`);
+            }
+          }
+        };
+      } else if (lowerMessage.includes('marca') || lowerMessage.includes('trademark')) {
+        // Resposta com verificação de marca registrada
+        aiResponse = {
+          text: `Vou analisar se "${message}" tem conflitos com marcas registradas. Verificando nos principais órgãos:`,
+          sender: 'ai',
+          showTrademarkChecker: true,
+          trademarkData: {
+            brandName: message,
+            autoStart: true,
+            isActive: true,
+            onStatusChange: (status: string) => {
+              setCurrentStep(`Trademark status: ${status}`);
+            }
+          }
+        };
+      } else if (lowerMessage.includes('social') || lowerMessage.includes('username') || lowerMessage.includes('redes')) {
+        // Resposta com verificação de redes sociais
+        aiResponse = {
+          text: `Verificando disponibilidade do username "${message}" nas principais redes sociais:`,
+          sender: 'ai',
+          showUsernameChecker: true,
+          usernameData: {
+            brandName: message,
+            autoStart: true,
+            isActive: true,
+            onStatusChange: (status: string) => {
+              setCurrentStep(`Social media status: ${status}`);
+            }
+          }
+        };
+      } else if (lowerMessage.includes('completa') || lowerMessage.includes('análise') || lowerMessage.includes('tudo')) {
+        // Resposta com análise completa (todos os componentes)
+        aiResponse = {
+          text: `Excelente! Vou fazer uma análise completa de "${message}". Isso inclui verificação de domínios, marcas registradas e redes sociais:`,
+          sender: 'ai',
+          showDomainChecker: true,
+          showTrademarkChecker: true,
+          showUsernameChecker: true,
+          showAnalysisSummary: true,
+          domainData: {
+            brandName: message,
+            autoStart: true,
+            isActive: true
+          },
+          trademarkData: {
+            brandName: message,
+            autoStart: true,
+            isActive: true
+          },
+          usernameData: {
+            brandName: message,
+            autoStart: true,
+            isActive: true
+          },
+          summaryData: {
+            brandName: message,
+            isVisible: true
+          }
+        };
+      } else {
+        // Resposta padrão com sugestões
+        aiResponse = {
+          text: `Olá! Para analisar "${message}", posso verificar:
+          
+• **Domínios** - Digite "verificar domínio ${message}"
+• **Marcas Registradas** - Digite "verificar marca ${message}"  
+• **Redes Sociais** - Digite "verificar redes sociais ${message}"
+• **Análise Completa** - Digite "análise completa ${message}"
+
+Qual tipo de verificação você gostaria de fazer primeiro?`,
+          sender: 'ai'
+        };
+      }
       
       setMessages(prev => [...prev, aiResponse]);
+      setCurrentStep('Aguardando próxima solicitação');
     }, 1000);
   };
 
