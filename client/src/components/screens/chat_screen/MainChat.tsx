@@ -213,10 +213,10 @@ Qual tipo de verificação você gostaria de fazer primeiro?`,
 
   return (
     <>
-      <div className="w-full h-full flex flex-col custom-selection" style={{ backgroundColor: '#2F3338' }}>
+      <div className="w-full h-full flex flex-col custom-selection chat-container" style={{ backgroundColor: '#2F3338' }}>
         
         {/* Header */}
-        <div className="flex-shrink-0">
+        <div className="flex-shrink-0 chat-header">
           <ChatHeader 
             brandName={brandName} 
             currentStep={currentStep} 
@@ -235,13 +235,33 @@ Qual tipo de verificação você gostaria de fazer primeiro?`,
         </div>
 
         {/* Input */}
-        <div className="flex-shrink-0">
+        <div className="flex-shrink-0 chat-input">
           <ChatInput onSendMessage={handleSendMessage} />
         </div>
 
       </div>
 
       <style jsx>{`
+        /* Container principal com safe area */
+        .chat-container {
+          height: 100vh;
+          height: 100dvh; /* Dynamic viewport height para mobile */
+          padding-top: env(safe-area-inset-top);
+          padding-bottom: env(safe-area-inset-bottom);
+        }
+        
+        /* Header com proteção adicional no mobile */
+        .chat-header {
+          position: relative;
+          z-index: 10;
+        }
+        
+        /* Input com proteção no mobile */
+        .chat-input {
+          position: relative;
+          z-index: 10;
+        }
+        
         /* Personalização da seleção de texto - Global */
         .custom-selection ::selection {
           background-color: rgba(93, 173, 226, 0.4);
@@ -256,6 +276,29 @@ Qual tipo de verificação você gostaria de fazer primeiro?`,
         @media (max-width: 768px) {
           .text-5xl {
             font-size: 2.5rem;
+          }
+          
+          /* Ajustes específicos para mobile */
+          .chat-container {
+            /* Adiciona um padding top extra em mobile se necessário */
+            padding-top: max(env(safe-area-inset-top), 10px);
+          }
+          
+          .chat-header {
+            /* Garante que o header não seja sobreposto */
+            position: sticky;
+            top: 0;
+            background-color: #2F3338;
+          }
+        }
+        
+        /* Suporte para iOS e outros dispositivos com notch */
+        @supports (padding: max(0px)) {
+          .chat-container {
+            padding-top: max(env(safe-area-inset-top), 0px);
+            padding-bottom: max(env(safe-area-inset-bottom), 0px);
+            padding-left: max(env(safe-area-inset-left), 0px);
+            padding-right: max(env(safe-area-inset-right), 0px);
           }
         }
       `}</style>
