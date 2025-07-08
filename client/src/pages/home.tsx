@@ -1,23 +1,27 @@
 import React, { useState, useCallback } from 'react';
 import { Paperclip, ArrowUp, Loader2 } from 'lucide-react';
+import { useLocation } from 'wouter';
 
 export default function NextNameApp() {
   const [inputValue, setInputValue] = useState('');
   const [isHovered, setIsHovered] = useState<string | false>(false);
   const [isFocused, setIsFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [, setLocation] = useLocation();
 
   const handleSubmit = useCallback(() => {
     if (inputValue.trim() && !isLoading) {
       setIsLoading(true);
       
-      // Simulando análise de disponibilidade
+      // Navegar para workspace com o conteúdo
       setTimeout(() => {
-        console.log('Analisando disponibilidade para:', inputValue);
+        // Usar sessionStorage para passar o conteúdo
+        sessionStorage.setItem('initialMessage', inputValue.trim());
+        setLocation('/workspace');
         setIsLoading(false);
-      }, 2000);
+      }, 500);
     }
-  }, [inputValue, isLoading]);
+  }, [inputValue, isLoading, setLocation]);
 
   const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {

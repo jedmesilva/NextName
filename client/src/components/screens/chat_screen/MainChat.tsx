@@ -66,19 +66,6 @@ const MainChat: React.FC = () => {
 
   const chatScrollRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll quando mensagens são adicionadas
-  useEffect(() => {
-    if (chatScrollRef.current) {
-      const timer = setTimeout(() => {
-        chatScrollRef.current?.scrollTo({
-          top: chatScrollRef.current.scrollHeight,
-          behavior: 'smooth'
-        });
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [messages]);
-
   const handleSendMessage = (message: string): void => {
     console.log('Mensagem enviada:', message);
     
@@ -187,6 +174,30 @@ Qual tipo de verificação você gostaria de fazer primeiro?`,
       setCurrentStep('Aguardando próxima solicitação');
     }, 1000);
   };
+
+  // Verificar se há mensagem inicial do sessionStorage
+  useEffect(() => {
+    const initialMessage = sessionStorage.getItem('initialMessage');
+    if (initialMessage) {
+      // Limpar o sessionStorage
+      sessionStorage.removeItem('initialMessage');
+      // Enviar a mensagem automaticamente
+      handleSendMessage(initialMessage);
+    }
+  }, []);
+
+  // Auto-scroll quando mensagens são adicionadas
+  useEffect(() => {
+    if (chatScrollRef.current) {
+      const timer = setTimeout(() => {
+        chatScrollRef.current?.scrollTo({
+          top: chatScrollRef.current.scrollHeight,
+          behavior: 'smooth'
+        });
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [messages]);
 
   // Função para mostrar componentes de análise globalmente (opcional)
   const showAnalysisResults = (analysisType: string, data: any): void => {
