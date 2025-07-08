@@ -250,17 +250,15 @@ Qual tipo de verificação você gostaria de fazer primeiro?`,
           overflow: hidden;
         }
         
-        /* Header com proteção total no mobile - FORÇANDO APLICAÇÃO IMEDIATA */
+        /* Header com proteção no mobile */
         .chat-header {
           position: relative;
           z-index: 20;
           background-color: #2F3338;
-          /* Força padding mínimo imediatamente */
-          padding-top: max(env(safe-area-inset-top), 10px);
-          padding-left: max(env(safe-area-inset-left), 0px);
-          padding-right: max(env(safe-area-inset-right), 0px);
-          /* Força margem superior adicional no mobile para compensar */
-          margin-top: env(safe-area-inset-top, 0px);
+          /* Padding básico sem forçar valores altos */
+          padding-top: env(safe-area-inset-top, 0px);
+          padding-left: env(safe-area-inset-left, 0px);
+          padding-right: env(safe-area-inset-right, 0px);
         }
         
         /* Input com proteção no mobile */
@@ -291,25 +289,19 @@ Qual tipo de verificação você gostaria de fazer primeiro?`,
           }
           
           .chat-container {
-            /* Força altura dinâmica no mobile */
+            /* Altura dinâmica no mobile sem padding adicional */
             height: 100vh;
             height: 100dvh;
             min-height: unset;
-            /* Adiciona padding superior para compensar safe area */
-            padding-top: env(safe-area-inset-top, 0px);
           }
           
           .chat-header {
-            /* Header sticky no mobile */
+            /* Header sticky no mobile sem altura forçada */
             position: sticky;
             top: 0;
-            /* Remove margin-top no mobile para evitar duplicação */
             margin-top: 0;
-            /* Altura mínima forçada */
-            min-height: calc(60px + env(safe-area-inset-top, 20px));
-            /* Força posicionamento correto desde o início */
-            transform: translateY(0);
-            will-change: transform;
+            /* Altura natural sem forcing */
+            min-height: 60px;
           }
           
           .chat-input {
@@ -323,19 +315,11 @@ Qual tipo de verificação você gostaria de fazer primeiro?`,
           }
         }
         
-        /* Ajustes para modo desktop no mobile */
+        /* Ajustes para modo desktop no mobile - simplificado */
         @media (max-width: 768px) and (min-height: 600px) {
           .chat-container {
-            /* Garante altura correta em modo desktop mobile */
             height: 100vh;
             max-height: 100vh;
-            /* Força padding superior mais robusto */
-            padding-top: max(env(safe-area-inset-top), 20px);
-          }
-          
-          .chat-header {
-            /* Força posicionamento adicional em modo desktop mobile */
-            margin-top: max(env(safe-area-inset-top), 10px);
           }
         }
         
@@ -367,18 +351,13 @@ Qual tipo de verificação você gostaria de fazer primeiro?`,
           }
         }
         
-        /* Força aplicação imediata no carregamento */
+        /* Aplicação natural no carregamento */
         @media (max-width: 768px) {
           .chat-header {
-            /* Garante que o header nunca fique atrás da barra */
-            position: sticky !important;
-            top: env(safe-area-inset-top, 0px) !important;
-            /* Força z-index alto */
-            z-index: 999 !important;
-            /* Força background sólido */
-            background-color: #2F3338 !important;
-            /* Força altura mínima robusta */
-            min-height: 80px !important;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            background-color: #2F3338;
           }
         }
       `}</style>
