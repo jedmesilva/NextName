@@ -250,14 +250,17 @@ Qual tipo de verificação você gostaria de fazer primeiro?`,
           overflow: hidden;
         }
         
-        /* Header com proteção total no mobile */
+        /* Header com proteção total no mobile - FORÇANDO APLICAÇÃO IMEDIATA */
         .report-header {
           position: relative;
           z-index: 20;
           background-color: #2F3338;
-          padding-top: env(safe-area-inset-top);
-          padding-left: env(safe-area-inset-left);
-          padding-right: env(safe-area-inset-right);
+          /* Força padding mínimo imediatamente */
+          padding-top: max(env(safe-area-inset-top), 10px);
+          padding-left: max(env(safe-area-inset-left), 0px);
+          padding-right: max(env(safe-area-inset-right), 0px);
+          /* Força margem superior adicional no mobile para compensar */
+          margin-top: env(safe-area-inset-top, 0px);
         }
         
         /* Input com proteção no mobile */
@@ -265,9 +268,9 @@ Qual tipo de verificação você gostaria de fazer primeiro?`,
           position: relative;
           z-index: 20;
           background-color: #2F3338;
-          padding-bottom: env(safe-area-inset-bottom);
-          padding-left: env(safe-area-inset-left);
-          padding-right: env(safe-area-inset-right);
+          padding-bottom: max(env(safe-area-inset-bottom), 10px);
+          padding-left: max(env(safe-area-inset-left), 0px);
+          padding-right: max(env(safe-area-inset-right), 0px);
         }
         
         /* Personalização da seleção de texto - Global */
@@ -292,20 +295,31 @@ Qual tipo de verificação você gostaria de fazer primeiro?`,
             height: 100vh;
             height: 100dvh;
             min-height: unset;
+            /* Adiciona padding superior para compensar safe area */
+            padding-top: env(safe-area-inset-top, 0px);
           }
           
           .report-header {
             /* Header sticky no mobile */
             position: sticky;
             top: 0;
-            min-height: calc(60px + env(safe-area-inset-top));
+            /* Remove margin-top no mobile para evitar duplicação */
+            margin-top: 0;
+            /* Altura mínima forçada */
+            min-height: calc(60px + env(safe-area-inset-top, 20px));
+            /* Força posicionamento correto desde o início */
+            transform: translateY(0);
+            will-change: transform;
           }
           
           .report-input {
             /* Input fixo no mobile */
             position: sticky;
             bottom: 0;
-            min-height: calc(80px + env(safe-area-inset-bottom));
+            min-height: calc(80px + env(safe-area-inset-bottom, 20px));
+            /* Força posicionamento correto desde o início */
+            transform: translateY(0);
+            will-change: transform;
           }
         }
         
@@ -315,6 +329,13 @@ Qual tipo de verificação você gostaria de fazer primeiro?`,
             /* Garante altura correta em modo desktop mobile */
             height: 100vh;
             max-height: 100vh;
+            /* Força padding superior mais robusto */
+            padding-top: max(env(safe-area-inset-top), 20px);
+          }
+          
+          .report-header {
+            /* Força posicionamento adicional em modo desktop mobile */
+            margin-top: max(env(safe-area-inset-top), 10px);
           }
         }
         
@@ -328,14 +349,36 @@ Qual tipo de verificação você gostaria de fazer primeiro?`,
           }
         }
         
-        /* Fallback para browsers sem suporte a env() */
-        @supports not (padding: env(safe-area-inset-top)) {
+        /* Fallback robusto para browsers sem suporte a env() */
+        @supports not (padding: max(env(safe-area-inset-top), 10px)) {
           .report-header {
-            padding-top: 10px;
+            padding-top: 20px;
+            margin-top: 20px;
           }
           
           .report-input {
-            padding-bottom: 10px;
+            padding-bottom: 20px;
+          }
+          
+          @media (max-width: 768px) {
+            .report-container {
+              padding-top: 30px;
+            }
+          }
+        }
+        
+        /* Força aplicação imediata no carregamento */
+        @media (max-width: 768px) {
+          .report-header {
+            /* Garante que o header nunca fique atrás da barra */
+            position: sticky !important;
+            top: env(safe-area-inset-top, 0px) !important;
+            /* Força z-index alto */
+            z-index: 999 !important;
+            /* Força background sólido */
+            background-color: #2F3338 !important;
+            /* Força altura mínima robusta */
+            min-height: 80px !important;
           }
         }
       `}</style>
