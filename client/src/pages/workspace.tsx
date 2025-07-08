@@ -68,7 +68,11 @@ const Workspace: React.FC = () => {
   });
 
   return (
-    <div className="w-full h-screen flex">
+    <div className="w-full h-screen flex overflow-hidden" style={{ 
+      height: '100vh',
+      maxHeight: '100vh',
+      position: 'relative'
+    }}>
       {/* Container principal das telas */}
       {visibleScreens.map((screen, index) => {
         const ScreenComponent = screen.component;
@@ -77,10 +81,12 @@ const Workspace: React.FC = () => {
         return (
           <div
             key={screen.id}
-            className={`${isOnlyScreen || isMobile ? 'w-full' : 'flex-1'} h-full`}
+            className={`${isOnlyScreen || isMobile ? 'w-full' : 'flex-1'} h-full overflow-hidden`}
             style={{ 
               width: isOnlyScreen || isMobile ? '100%' : (screen.width || 'auto'),
-              minWidth: visibleScreens.length > 1 && !isMobile ? '300px' : 'auto'
+              minWidth: visibleScreens.length > 1 && !isMobile ? '300px' : 'auto',
+              height: '100%',
+              maxHeight: '100%'
             }}
           >
             <ScreenComponent />

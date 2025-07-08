@@ -242,24 +242,32 @@ Qual tipo de verificação você gostaria de fazer primeiro?`,
       </div>
 
       <style jsx>{`
-        /* Container principal com safe area */
+        /* Container principal com altura fixa consistente */
         .chat-container {
-          height: 100vh;
-          height: 100dvh; /* Dynamic viewport height para mobile */
-          padding-top: env(safe-area-inset-top);
-          padding-bottom: env(safe-area-inset-bottom);
+          height: 100%;
+          min-height: 100vh;
+          position: relative;
+          overflow: hidden;
         }
         
-        /* Header com proteção adicional no mobile */
+        /* Header com proteção total no mobile */
         .chat-header {
           position: relative;
-          z-index: 10;
+          z-index: 20;
+          background-color: #2F3338;
+          padding-top: env(safe-area-inset-top);
+          padding-left: env(safe-area-inset-left);
+          padding-right: env(safe-area-inset-right);
         }
         
         /* Input com proteção no mobile */
         .chat-input {
           position: relative;
-          z-index: 10;
+          z-index: 20;
+          background-color: #2F3338;
+          padding-bottom: env(safe-area-inset-bottom);
+          padding-left: env(safe-area-inset-left);
+          padding-right: env(safe-area-inset-right);
         }
         
         /* Personalização da seleção de texto - Global */
@@ -273,32 +281,61 @@ Qual tipo de verificação você gostaria de fazer primeiro?`,
           color: #F8FAFC;
         }
         
+        /* Ajustes específicos para mobile */
         @media (max-width: 768px) {
           .text-5xl {
             font-size: 2.5rem;
           }
           
-          /* Ajustes específicos para mobile */
           .chat-container {
-            /* Adiciona um padding top extra em mobile se necessário */
-            padding-top: max(env(safe-area-inset-top), 10px);
+            /* Força altura dinâmica no mobile */
+            height: 100vh;
+            height: 100dvh;
+            min-height: unset;
           }
           
           .chat-header {
-            /* Garante que o header não seja sobreposto */
+            /* Header sticky no mobile */
             position: sticky;
             top: 0;
-            background-color: #2F3338;
+            min-height: calc(60px + env(safe-area-inset-top));
+          }
+          
+          .chat-input {
+            /* Input fixo no mobile */
+            position: sticky;
+            bottom: 0;
+            min-height: calc(80px + env(safe-area-inset-bottom));
           }
         }
         
-        /* Suporte para iOS e outros dispositivos com notch */
-        @supports (padding: max(0px)) {
+        /* Ajustes para modo desktop no mobile */
+        @media (max-width: 768px) and (min-height: 600px) {
           .chat-container {
-            padding-top: max(env(safe-area-inset-top), 0px);
-            padding-bottom: max(env(safe-area-inset-bottom), 0px);
-            padding-left: max(env(safe-area-inset-left), 0px);
-            padding-right: max(env(safe-area-inset-right), 0px);
+            /* Garante altura correta em modo desktop mobile */
+            height: 100vh;
+            max-height: 100vh;
+          }
+        }
+        
+        /* Suporte para diferentes tipos de viewport */
+        @supports (height: 100dvh) {
+          @media (max-width: 768px) {
+            .chat-container {
+              height: 100dvh;
+              max-height: 100dvh;
+            }
+          }
+        }
+        
+        /* Fallback para browsers sem suporte a env() */
+        @supports not (padding: env(safe-area-inset-top)) {
+          .chat-header {
+            padding-top: 10px;
+          }
+          
+          .chat-input {
+            padding-bottom: 10px;
           }
         }
       `}</style>
