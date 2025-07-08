@@ -1,4 +1,4 @@
-import React, { useState, KeyboardEvent, ChangeEvent } from 'react';
+import React, { useState, KeyboardEvent, ChangeEvent, useRef, useCallback } from 'react';
 import { Paperclip, ArrowUp, Plus } from 'lucide-react';
 
 interface ChatInputProps {
@@ -7,6 +7,7 @@ interface ChatInputProps {
 
 const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
   const [message, setMessage] = useState<string>('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSendMessage = (): void => {
     if (message.trim()) {
@@ -31,6 +32,26 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
     target.style.height = 'auto';
     target.style.height = target.scrollHeight + 'px';
   };
+
+  const handleFileUpload = useCallback((): void => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  }, []);
+
+  const handleFileChange = useCallback((e: ChangeEvent<HTMLInputElement>): void => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      console.log('Arquivo selecionado no chat:', file.name, 'Tamanho:', file.size, 'Tipo:', file.type);
+      
+      // Aqui você pode implementar a lógica para processar o arquivo
+      // Por exemplo, fazer upload para um servidor ou processar localmente
+      
+      // Reset do input para permitir selecionar o mesmo arquivo novamente
+      e.target.value = '';
+    }
+  }, []);
 
   return (
     <>
@@ -64,10 +85,21 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
               </button>
               <button 
                 className="w-9 h-9 rounded-full bg-button-gray flex items-center justify-center text-cream hover:bg-medium-gray active:scale-95 transition-all duration-200 focus:outline-none"
+                onClick={handleFileUpload}
                 aria-label="Attach file"
               >
                 <Paperclip size={16} />
               </button>
+              
+              {/* Hidden file input */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                onChange={handleFileChange}
+                style={{ display: 'none' }}
+                accept="image/*,application/pdf,.doc,.docx,.txt,.csv,.xlsx"
+                aria-hidden="true"
+              />
             </div>
 
             <button 

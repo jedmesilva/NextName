@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { Paperclip, ArrowUp, Loader2 } from 'lucide-react';
 import { useLocation } from 'wouter';
 
@@ -8,6 +8,7 @@ export default function NextNameApp() {
   const [isFocused, setIsFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [, setLocation] = useLocation();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = useCallback(() => {
     if (inputValue.trim() && !isLoading) {
@@ -29,6 +30,26 @@ export default function NextNameApp() {
       handleSubmit();
     }
   }, [handleSubmit]);
+
+  const handleFileUpload = useCallback(() => {
+    if (fileInputRef.current && !isLoading) {
+      fileInputRef.current.click();
+    }
+  }, [isLoading]);
+
+  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      console.log('Arquivo selecionado:', file.name, 'Tamanho:', file.size, 'Tipo:', file.type);
+      
+      // Aqui você pode implementar a lógica para processar o arquivo
+      // Por exemplo, fazer upload para um servidor ou processar localmente
+      
+      // Reset do input para permitir selecionar o mesmo arquivo novamente
+      e.target.value = '';
+    }
+  }, []);
 
   return (
     <div className="min-h-screen relative overflow-hidden" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
@@ -179,6 +200,7 @@ export default function NextNameApp() {
                 }}
                 onMouseEnter={() => setIsHovered('attach')}
                 onMouseLeave={() => setIsHovered(false)}
+                onClick={handleFileUpload}
                 disabled={isLoading}
                 aria-label="Anexar arquivo"
               >
@@ -189,6 +211,16 @@ export default function NextNameApp() {
                   }}
                 />
               </button>
+              
+              {/* Hidden file input */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                onChange={handleFileChange}
+                style={{ display: 'none' }}
+                accept="image/*,application/pdf,.doc,.docx,.txt,.csv,.xlsx"
+                aria-hidden="true"
+              />
               
               {/* Send button */}
               <button 
