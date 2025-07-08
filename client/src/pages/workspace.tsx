@@ -88,7 +88,7 @@ const Workspace: React.FC = () => {
           return (
             <div
               key={screen.id}
-              className={`overflow-hidden relative ${isOnlyScreen ? 'w-full' : 'flex-1'}`}
+              className={`relative ${isOnlyScreen ? 'w-full' : 'flex-1'} h-full`}
               style={{ 
                 width: isOnlyScreen ? '100%' : (screen.width || 'auto'),
                 minWidth: visibleScreens.length > 1 ? '300px' : 'auto'

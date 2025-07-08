@@ -72,7 +72,7 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
 
   return (
     <>
-      <div className="pt-20 pb-48 px-4">
+      <div className="p-4 pb-8">
         <div className="max-w-4xl mx-auto space-y-8">
           
           {/* Mensagem inicial da AI */}

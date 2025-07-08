@@ -187,22 +187,28 @@ Qual tipo de verificação você gostaria de fazer primeiro?`,
 
   return (
     <>
-      <div className="w-full min-h-screen custom-selection" style={{ backgroundColor: '#2F3338' }}>
+      <div className="w-full h-full flex flex-col custom-selection" style={{ backgroundColor: '#2F3338' }}>
         
         {/* Header */}
-        <ChatHeader 
-          brandName={brandName} 
-          currentStep={currentStep} 
-        />
+        <div className="flex-shrink-0">
+          <ChatHeader 
+            brandName={brandName} 
+            currentStep={currentStep} 
+          />
+        </div>
 
-        {/* History - Passando os componentes de análise */}
-        <ChatHistory 
-          messages={messages} 
-          showAnalysisComponents={showAnalysisComponents}
-        />
+        {/* History - Container com scroll */}
+        <div className="flex-1 overflow-y-auto">
+          <ChatHistory 
+            messages={messages} 
+            showAnalysisComponents={showAnalysisComponents}
+          />
+        </div>
 
         {/* Input */}
-        <ChatInput onSendMessage={handleSendMessage} />
+        <div className="flex-shrink-0">
+          <ChatInput onSendMessage={handleSendMessage} />
+        </div>
 
       </div>
 
