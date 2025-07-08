@@ -289,29 +289,39 @@ Qual tipo de verificação você gostaria de fazer primeiro?`,
           }
           
           .report-container {
-            /* Altura dinâmica no mobile sem padding adicional */
+            /* Altura dinâmica no mobile */
             height: 100vh;
             height: 100dvh;
             min-height: unset;
+            /* Padding para header e input fixos */
+            padding-top: 60px;
+            padding-bottom: 80px;
           }
           
           .report-header {
-            /* Header sticky no mobile sem altura forçada */
-            position: sticky;
+            /* Header fixo no mobile para evitar problemas com scroll automático */
+            position: fixed;
             top: 0;
-            margin-top: 0;
-            /* Altura natural sem forcing */
-            min-height: 60px;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 60px;
+            /* Garante que ocupe toda a largura */
+            width: 100%;
+            box-sizing: border-box;
           }
           
           .report-input {
             /* Input fixo no mobile */
-            position: sticky;
+            position: fixed;
             bottom: 0;
-            min-height: calc(80px + env(safe-area-inset-bottom, 20px));
-            /* Força posicionamento correto desde o início */
-            transform: translateY(0);
-            will-change: transform;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 80px;
+            /* Garante que ocupe toda a largura */
+            width: 100%;
+            box-sizing: border-box;
           }
         }
         
