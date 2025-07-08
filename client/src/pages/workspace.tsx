@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MainChat from '../components/screens/chat_screen/MainChat';
 import MainReport from '../components/screens/report_screen/MainReport';
 
@@ -13,6 +13,9 @@ interface ScreenConfig {
 }
 
 const Workspace: React.FC = () => {
+  // Estado para controlar se é mobile ou desktop
+  const [isMobile, setIsMobile] = useState(false);
+
   // Configuração das telas disponíveis
   const [screens, setScreens] = useState<ScreenConfig[]>([
     {
@@ -34,13 +37,35 @@ const Workspace: React.FC = () => {
     // Futuras telas podem ser adicionadas aqui
   ]);
 
+  // Função para detectar tamanho da tela
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768); // 768px é o breakpoint md do Tailwind
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
   // Função para adicionar novas telas (para uso futuro)
   const addScreen = (screenConfig: ScreenConfig): void => {
     setScreens(prev => [...prev, screenConfig]);
   };
 
-  // Filtrar apenas telas visíveis
-  const visibleScreens = screens.filter(screen => screen.visible);
+  // Filtrar telas visíveis baseado no tamanho da tela
+  const visibleScreens = screens.filter(screen => {
+    if (screen.visible) {
+      // No mobile, mostrar apenas a tela de chat
+      if (isMobile) {
+        return screen.id === 'chat';
+      }
+      // No desktop, mostrar todas as telas visíveis
+      return true;
+    }
+    return false;
+  });
 
   return (
     <div className="w-full h-screen flex">
@@ -52,10 +77,10 @@ const Workspace: React.FC = () => {
         return (
           <div
             key={screen.id}
-            className={`${isOnlyScreen ? 'w-full' : 'flex-1'} h-full`}
+            className={`${isOnlyScreen || isMobile ? 'w-full' : 'flex-1'} h-full`}
             style={{ 
-              width: isOnlyScreen ? '100%' : (screen.width || 'auto'),
-              minWidth: visibleScreens.length > 1 ? '300px' : 'auto'
+              width: isOnlyScreen || isMobile ? '100%' : (screen.width || 'auto'),
+              minWidth: visibleScreens.length > 1 && !isMobile ? '300px' : 'auto'
             }}
           >
             <ScreenComponent />
