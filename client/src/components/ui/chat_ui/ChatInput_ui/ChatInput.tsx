@@ -1,21 +1,35 @@
-import { useState } from 'react';
+import React, { useState, KeyboardEvent, ChangeEvent } from 'react';
 import { Paperclip, ArrowUp, Plus } from 'lucide-react';
 
-export default function ChatInput({ onSendMessage }) {
-  const [message, setMessage] = useState('');
+interface ChatInputProps {
+  onSendMessage: (message: string) => void;
+}
 
-  const handleSendMessage = () => {
+const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
+  const [message, setMessage] = useState<string>('');
+
+  const handleSendMessage = (): void => {
     if (message.trim()) {
       onSendMessage(message);
       setMessage('');
     }
   };
 
-  const handleKeyPress = (e) => {
+  const handleKeyPress = (e: KeyboardEvent<HTMLTextAreaElement>): void => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
+  };
+
+  const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>): void => {
+    setMessage(e.target.value);
+  };
+
+  const handleTextareaInput = (e: React.FormEvent<HTMLTextAreaElement>): void => {
+    const target = e.target as HTMLTextAreaElement;
+    target.style.height = 'auto';
+    target.style.height = target.scrollHeight + 'px';
   };
 
   return (
@@ -26,7 +40,7 @@ export default function ChatInput({ onSendMessage }) {
           <div className="mb-4">
             <textarea
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={handleInputChange}
               onKeyPress={handleKeyPress}
               placeholder="Enter your brand name to analyze availability..."
               className="w-full focus:outline-none text-cream placeholder-cream-muted text-base border-0 bg-transparent custom-cursor resize-none min-h-[1.5rem] max-h-32 overflow-y-auto custom-textarea"
@@ -35,20 +49,23 @@ export default function ChatInput({ onSendMessage }) {
                 height: 'auto',
                 minHeight: '1.5rem'
               }}
-              onInput={(e) => {
-                e.target.style.height = 'auto';
-                e.target.style.height = e.target.scrollHeight + 'px';
-              }}
+              onInput={handleTextareaInput}
             />
           </div>
 
           {/* Buttons */}
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <button className="w-9 h-9 rounded-full bg-button-gray flex items-center justify-center text-cream hover:bg-medium-gray active:scale-95 transition-all duration-200 focus:outline-none">
+              <button 
+                className="w-9 h-9 rounded-full bg-button-gray flex items-center justify-center text-cream hover:bg-medium-gray active:scale-95 transition-all duration-200 focus:outline-none"
+                aria-label="Add attachment"
+              >
                 <Plus size={16} />
               </button>
-              <button className="w-9 h-9 rounded-full bg-button-gray flex items-center justify-center text-cream hover:bg-medium-gray active:scale-95 transition-all duration-200 focus:outline-none">
+              <button 
+                className="w-9 h-9 rounded-full bg-button-gray flex items-center justify-center text-cream hover:bg-medium-gray active:scale-95 transition-all duration-200 focus:outline-none"
+                aria-label="Attach file"
+              >
                 <Paperclip size={16} />
               </button>
             </div>
@@ -61,6 +78,7 @@ export default function ChatInput({ onSendMessage }) {
                   : 'bg-blue-light text-blue-primary opacity-50 cursor-not-allowed'
               }`}
               disabled={!message.trim()}
+              aria-label="Send message"
             >
               <ArrowUp size={16} />
             </button>
@@ -150,4 +168,6 @@ export default function ChatInput({ onSendMessage }) {
       `}</style>
     </>
   );
-}
+};
+
+export default ChatInput;

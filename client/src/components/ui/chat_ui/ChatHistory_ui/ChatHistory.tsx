@@ -1,4 +1,75 @@
-export default function ChatHistory({ messages = [] }) {
+import React from 'react';
+import DomainAvailabilityChecker from '../../../client/src/components/ui/analysis_ui/DomainAvailabilityChecker';
+import TrademarkChecker from '../../../client/src/components/ui/analysis_ui/TrademarkChecker';
+import UsernameAvailabilityChecker from '../../../client/src/components/ui/analysis_ui/UsernameAvailabilityChecker';
+import AnalysisSummary from '../../../client/src/components/ui/analysis_ui/AnalysisSummary';
+
+// Tipos para os dados dos componentes de análise
+interface DomainData {
+  brandName: string;
+  [key: string]: any;
+}
+
+interface TrademarkData {
+  brandName: string;
+  [key: string]: any;
+}
+
+interface UsernameData {
+  brandName: string;
+  [key: string]: any;
+}
+
+interface SummaryData {
+  brandName: string;
+  [key: string]: any;
+}
+
+interface AnalysisData {
+  domainData?: DomainData;
+  trademarkData?: TrademarkData;
+  usernameData?: UsernameData;
+  summaryData?: SummaryData;
+}
+
+interface AnalysisComponentsConfig {
+  showDomainChecker?: boolean;
+  showTrademarkChecker?: boolean;
+  showUsernameChecker?: boolean;
+  showAnalysisSummary?: boolean;
+  analysisData?: AnalysisData;
+}
+
+interface Message {
+  text: string;
+  sender: 'user' | 'ai';
+  showDomainChecker?: boolean;
+  showTrademarkChecker?: boolean;
+  showUsernameChecker?: boolean;
+  showAnalysisSummary?: boolean;
+  domainData?: DomainData;
+  trademarkData?: TrademarkData;
+  usernameData?: UsernameData;
+  summaryData?: SummaryData;
+}
+
+interface ChatHistoryProps {
+  messages?: Message[];
+  showAnalysisComponents?: AnalysisComponentsConfig;
+}
+
+const ChatHistory: React.FC<ChatHistoryProps> = ({ 
+  messages = [], 
+  showAnalysisComponents = {} 
+}) => {
+  const {
+    showDomainChecker = false,
+    showTrademarkChecker = false,
+    showUsernameChecker = false,
+    showAnalysisSummary = false,
+    analysisData = {}
+  } = showAnalysisComponents;
+
   return (
     <>
       <div className="pt-20 pb-48 px-4">
@@ -31,6 +102,31 @@ export default function ChatHistory({ messages = [] }) {
             </p>
           </div>
 
+          {/* Componentes de Análise - Renderizados condicionalmente */}
+          {showDomainChecker && analysisData.domainData && (
+            <div className="my-6">
+              <DomainAvailabilityChecker {...analysisData.domainData} />
+            </div>
+          )}
+
+          {showTrademarkChecker && analysisData.trademarkData && (
+            <div className="my-6">
+              <TrademarkChecker {...analysisData.trademarkData} />
+            </div>
+          )}
+
+          {showUsernameChecker && analysisData.usernameData && (
+            <div className="my-6">
+              <UsernameAvailabilityChecker {...analysisData.usernameData} />
+            </div>
+          )}
+
+          {showAnalysisSummary && analysisData.summaryData && (
+            <div className="my-6">
+              <AnalysisSummary {...analysisData.summaryData} />
+            </div>
+          )}
+
           {/* Balão de mensagem do usuário 2 */}
           <div className="flex justify-end">
             <div className="bg-message-balloon text-cream p-3 w-full message-balloon">
@@ -58,6 +154,48 @@ export default function ChatHistory({ messages = [] }) {
             </div>
           </div>
 
+          {/* Renderização dinâmica de mensagens */}
+          {messages.map((message: Message, index: number) => (
+            <div key={index}>
+              {message.sender === 'user' ? (
+                <div className="flex justify-end">
+                  <div className="bg-message-balloon text-cream p-3 w-full message-balloon">
+                    {message.text}
+                  </div>
+                </div>
+              ) : (
+                <div className="text-cream text-left leading-relaxed text-lg">
+                  <p className="mb-4">{message.text}</p>
+                  
+                  {/* Renderizar componentes de análise se especificado na mensagem */}
+                  {message.showDomainChecker && message.domainData && (
+                    <div className="my-6">
+                      <DomainAvailabilityChecker {...message.domainData} />
+                    </div>
+                  )}
+                  
+                  {message.showTrademarkChecker && message.trademarkData && (
+                    <div className="my-6">
+                      <TrademarkChecker {...message.trademarkData} />
+                    </div>
+                  )}
+                  
+                  {message.showUsernameChecker && message.usernameData && (
+                    <div className="my-6">
+                      <UsernameAvailabilityChecker {...message.usernameData} />
+                    </div>
+                  )}
+                  
+                  {message.showAnalysisSummary && message.summaryData && (
+                    <div className="my-6">
+                      <AnalysisSummary {...message.summaryData} />
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+
         </div>
       </div>
 
@@ -78,4 +216,6 @@ export default function ChatHistory({ messages = [] }) {
       `}</style>
     </>
   );
-}
+};
+
+export default ChatHistory;

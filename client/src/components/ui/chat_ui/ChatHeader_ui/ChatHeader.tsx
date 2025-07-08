@@ -1,6 +1,12 @@
+import React from 'react';
 import { FileText } from 'lucide-react';
 
-export default function ChatHeader({ brandName, currentStep }) {
+interface ChatHeaderProps {
+  brandName: string;
+  currentStep: string;
+}
+
+const ChatHeader: React.FC<ChatHeaderProps> = ({ brandName, currentStep }) => {
   return (
     <>
       <div className="fixed top-0 left-0 right-0 p-4 bg-header-solid border-b border-header-border">
@@ -56,4 +62,6 @@ export default function ChatHeader({ brandName, currentStep }) {
       `}</style>
     </>
   );
-}
+};
+
+export default ChatHeader;
