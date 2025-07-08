@@ -1,8 +1,8 @@
 import React from 'react';
-import DomainAvailabilityChecker from '../../../client/src/components/ui/analysis_ui/DomainAvailabilityChecker';
-import TrademarkChecker from '../../../client/src/components/ui/analysis_ui/TrademarkChecker';
-import UsernameAvailabilityChecker from '../../../client/src/components/ui/analysis_ui/UsernameAvailabilityChecker';
-import AnalysisSummary from '../../../client/src/components/ui/analysis_ui/AnalysisSummary';
+import DomainAvailabilityChecker from '../../analysis_ui/DomainAvailabilityChecker';
+import TrademarkChecker from '../../analysis_ui/TrademarkChecker';
+import UsernameAvailabilityChecker from '../../analysis_ui/UsernameAvailabilityChecker';
+import AnalysisSummary from '../../analysis_ui/AnalysisSummary';
 
 // Tipos para os dados dos componentes de análise
 interface DomainData {
