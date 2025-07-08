@@ -70,15 +70,8 @@ const Workspace: React.FC = () => {
   return (
     <div className="w-full h-screen flex overflow-hidden" style={{ 
       height: '100vh',
-      height: '100dvh', // Usa viewport dinâmico quando disponível
       maxHeight: '100vh',
-      maxHeight: '100dvh',
-      position: 'relative',
-      // Considera safe areas no mobile
-      paddingTop: 'env(safe-area-inset-top)',
-      paddingLeft: 'env(safe-area-inset-left)',
-      paddingRight: 'env(safe-area-inset-right)',
-      paddingBottom: 'env(safe-area-inset-bottom)'
+      position: 'relative'
     }}>
       {/* Container principal das telas */}
       {visibleScreens.map((screen, index) => {
