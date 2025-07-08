@@ -123,7 +123,7 @@ export default function NextNameApp() {
             className="text-5xl md:text-6xl font-bold mb-6 tracking-tight transition-all duration-300"
             style={{ color: '#F8FAFC' }}
           >
-            O PRÓXIMO NOME ESTÁ AQUI
+            O PRÓXIMO NOME DA SUA MARCA ESTÁ AQUI
           </h1>
           
           {/* Subtitle */}
@@ -131,7 +131,7 @@ export default function NextNameApp() {
             className="text-lg md:text-xl mb-12 max-w-xl mx-auto leading-relaxed transition-opacity duration-300"
             style={{ color: 'rgba(248, 250, 252, 0.85)' }}
           >
-            Brainstorm o próximo nome da sua marca com IA e obtenha análise profunda de disponibilidade em domínios, marcas registradas e redes sociais
+            Crie o próximo nome da sua marca com IA e obtenha análise profunda de disponibilidade dos domínios, propriedade da marca e nomes nas redes sociais
           </p>
           
           {/* Input field container */}
