@@ -289,39 +289,29 @@ Qual tipo de verificação você gostaria de fazer primeiro?`,
           }
           
           .chat-container {
-            /* Altura dinâmica no mobile */
+            /* Altura dinâmica no mobile sem padding adicional */
             height: 100vh;
             height: 100dvh;
             min-height: unset;
-            /* Padding para header e input fixos */
-            padding-top: 60px;
-            padding-bottom: 80px;
           }
           
           .chat-header {
-            /* Header fixo no mobile para evitar problemas com scroll automático */
-            position: fixed;
+            /* Header sticky no mobile sem altura forçada */
+            position: sticky;
             top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            height: 60px;
-            /* Garante que ocupe toda a largura */
-            width: 100%;
-            box-sizing: border-box;
+            margin-top: 0;
+            /* Altura natural sem forcing */
+            min-height: 60px;
           }
           
           .chat-input {
             /* Input fixo no mobile */
-            position: fixed;
+            position: sticky;
             bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            height: 80px;
-            /* Garante que ocupe toda a largura */
-            width: 100%;
-            box-sizing: border-box;
+            min-height: calc(80px + env(safe-area-inset-bottom, 20px));
+            /* Força posicionamento correto desde o início */
+            transform: translateY(0);
+            will-change: transform;
           }
         }
         
