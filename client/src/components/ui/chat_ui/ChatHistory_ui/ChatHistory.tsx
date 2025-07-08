@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import DomainAvailabilityChecker from '../../analysis_ui/DomainAvailabilityChecker';
 import TrademarkChecker from '../../analysis_ui/TrademarkChecker';
 import UsernameAvailabilityChecker from '../../analysis_ui/UsernameAvailabilityChecker';
@@ -69,6 +69,21 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
     showAnalysisSummary = false,
     analysisData = {}
   } = showAnalysisComponents;
+
+  const endOfMessagesRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll when messages change
+  useEffect(() => {
+    endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  // Auto-scroll when analysis components appear
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [showDomainChecker, showTrademarkChecker, showUsernameChecker, showAnalysisSummary]);
 
   return (
     <>
@@ -225,12 +240,23 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
             <div key={index}>
               {message.sender === 'user' ? (
                 <div className="flex justify-end">
-                  <div className="bg-message-balloon text-cream p-3 w-full message-balloon">
+                  <div 
+                    className="p-3 w-full"
+                    style={{
+                      backgroundColor: 'rgba(93, 173, 226, 0.15)',
+                      border: '1px solid rgba(93, 173, 226, 0.2)',
+                      borderRadius: '1rem 1rem 0.25rem 1rem',
+                      color: '#F8FAFC'
+                    }}
+                  >
                     {message.text}
                   </div>
                 </div>
               ) : (
-                <div className="text-cream text-left leading-relaxed text-lg">
+                <div 
+                  className="text-left leading-relaxed text-lg"
+                  style={{ color: '#F8FAFC' }}
+                >
                   <p className="mb-4">{message.text}</p>
                   
                   {/* Renderizar componentes de análise se especificado na mensagem */}
@@ -262,24 +288,11 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
             </div>
           ))}
 
+          {/* Elemento de referência para auto-scroll */}
+          <div ref={endOfMessagesRef} />
+
         </div>
       </div>
-
-      <style jsx>{`
-        .text-cream {
-          color: #F8FAFC;
-        }
-        
-        .bg-message-balloon {
-          background-color: rgba(93, 173, 226, 0.15);
-          border: 1px solid rgba(93, 173, 226, 0.2);
-        }
-        
-        /* Balão de mensagem com 3 cantos arredondados e 1 com pouco arredondamento */
-        .message-balloon {
-          border-radius: 1rem 1rem 0.25rem 1rem;
-        }
-      `}</style>
     </>
   );
 };

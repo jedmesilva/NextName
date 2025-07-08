@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import ChatHeader from '../../ui/chat_ui/ChatHeader_ui/ChatHeader';
 import ChatHistory from '../../ui/chat_ui/ChatHistory_ui/ChatHistory';
 import ChatInput from '../../ui/chat_ui/ChatInput_ui/ChatInput';
@@ -63,6 +63,21 @@ const MainChat: React.FC = () => {
     showAnalysisSummary: false,
     analysisData: {}
   });
+
+  const chatScrollRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll quando mensagens são adicionadas
+  useEffect(() => {
+    if (chatScrollRef.current) {
+      const timer = setTimeout(() => {
+        chatScrollRef.current?.scrollTo({
+          top: chatScrollRef.current.scrollHeight,
+          behavior: 'smooth'
+        });
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [messages]);
 
   const handleSendMessage = (message: string): void => {
     console.log('Mensagem enviada:', message);
@@ -198,7 +213,10 @@ Qual tipo de verificação você gostaria de fazer primeiro?`,
         </div>
 
         {/* History - Container com scroll */}
-        <div className="flex-1 overflow-y-auto">
+        <div 
+          ref={chatScrollRef}
+          className="flex-1 overflow-y-auto"
+        >
           <ChatHistory 
             messages={messages} 
             showAnalysisComponents={showAnalysisComponents}
