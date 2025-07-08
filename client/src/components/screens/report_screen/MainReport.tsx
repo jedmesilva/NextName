@@ -1,172 +1,266 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import ChatHeader from '../../ui/chat_ui/ChatHeader_ui/ChatHeader';
+import ChatHistory from '../../ui/chat_ui/ChatHistory_ui/ChatHistory';
+import ChatInput from '../../ui/chat_ui/ChatInput_ui/ChatInput';
 
-// Tipos para os dados do relatório
-interface ReportData {
+// Tipos para os dados dos componentes de análise
+interface DomainData {
   brandName: string;
-  domainAvailability: {
-    available: string[];
-    unavailable: string[];
-  };
-  trademarkStatus: {
-    conflicts: number;
-    similar: string[];
-  };
-  socialMediaAvailability: {
-    available: string[];
-    unavailable: string[];
-  };
-  overallScore: number;
+  [key: string]: any;
 }
 
-const MainReport: React.FC = () => {
-  const [reportData, setReportData] = useState<ReportData>({
-    brandName: 'TechFlow',
-    domainAvailability: {
-      available: ['.com', '.net', '.org'],
-      unavailable: ['.io', '.app']
-    },
-    trademarkStatus: {
-      conflicts: 2,
-      similar: ['TechFlows', 'TechFlowz']
-    },
-    socialMediaAvailability: {
-      available: ['Instagram', 'Twitter', 'LinkedIn'],
-      unavailable: ['Facebook', 'TikTok']
-    },
-    overallScore: 78
+interface TrademarkData {
+  brandName: string;
+  [key: string]: any;
+}
+
+interface UsernameData {
+  brandName: string;
+  [key: string]: any;
+}
+
+interface SummaryData {
+  brandName: string;
+  [key: string]: any;
+}
+
+interface AnalysisData {
+  domainData?: DomainData;
+  trademarkData?: TrademarkData;
+  usernameData?: UsernameData;
+  summaryData?: SummaryData;
+}
+
+interface AnalysisComponentsConfig {
+  showDomainChecker?: boolean;
+  showTrademarkChecker?: boolean;
+  showUsernameChecker?: boolean;
+  showAnalysisSummary?: boolean;
+  analysisData?: AnalysisData;
+}
+
+interface Message {
+  text: string;
+  sender: 'user' | 'ai';
+  showDomainChecker?: boolean;
+  showTrademarkChecker?: boolean;
+  showUsernameChecker?: boolean;
+  showAnalysisSummary?: boolean;
+  domainData?: DomainData;
+  trademarkData?: TrademarkData;
+  usernameData?: UsernameData;
+  summaryData?: SummaryData;
+}
+
+const MainChat: React.FC = () => {
+  const [brandName, setBrandName] = useState<string>('TechFlow');
+  const [currentStep, setCurrentStep] = useState<string>('Analyzing trademark availability');
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [showAnalysisComponents, setShowAnalysisComponents] = useState<AnalysisComponentsConfig>({
+    showDomainChecker: false,
+    showTrademarkChecker: false,
+    showUsernameChecker: false,
+    showAnalysisSummary: false,
+    analysisData: {}
   });
 
-  const [activeTab, setActiveTab] = useState<string>('overview');
+  const chatScrollRef = useRef<HTMLDivElement>(null);
 
-  const renderOverview = () => (
-    <div className="space-y-6">
-      <div className="bg-gray-800 rounded-lg p-6">
-        <h3 className="text-xl font-semibold text-white mb-4">Resumo da Análise</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-green-600 bg-opacity-20 rounded-lg p-4 border border-green-600 border-opacity-30">
-            <h4 className="text-green-400 font-semibold mb-2">Domínios</h4>
-            <p className="text-sm text-gray-300">{reportData.domainAvailability.available.length} disponíveis</p>
-          </div>
-          <div className="bg-yellow-600 bg-opacity-20 rounded-lg p-4 border border-yellow-600 border-opacity-30">
-            <h4 className="text-yellow-400 font-semibold mb-2">Marcas</h4>
-            <p className="text-sm text-gray-300">{reportData.trademarkStatus.conflicts} conflitos</p>
-          </div>
-          <div className="bg-blue-600 bg-opacity-20 rounded-lg p-4 border border-blue-600 border-opacity-30">
-            <h4 className="text-blue-400 font-semibold mb-2">Redes Sociais</h4>
-            <p className="text-sm text-gray-300">{reportData.socialMediaAvailability.available.length} disponíveis</p>
-          </div>
-        </div>
-      </div>
+  const handleSendMessage = (message: string): void => {
+    console.log('Mensagem enviada:', message);
+    
+    // Adicionar mensagem do usuário ao histórico
+    setMessages(prev => [...prev, { text: message, sender: 'user' }]);
+    
+    // Atualizar o nome da marca baseado na mensagem
+    setBrandName(message);
+    
+    // Simular diferentes tipos de resposta baseado no conteúdo da mensagem
+    const lowerMessage = message.toLowerCase();
+    
+    setTimeout(() => {
+      let aiResponse: Message;
       
-      <div className="bg-gray-800 rounded-lg p-6">
-        <h3 className="text-xl font-semibold text-white mb-4">Score Geral</h3>
-        <div className="flex items-center space-x-4">
-          <div className="w-full bg-gray-700 rounded-full h-4">
-            <div 
-              className="bg-blue-600 h-4 rounded-full transition-all duration-300"
-              style={{ width: `${reportData.overallScore}%` }}
-            ></div>
-          </div>
-          <span className="text-2xl font-bold text-white">{reportData.overallScore}%</span>
-        </div>
-      </div>
-    </div>
-  );
+      if (lowerMessage.includes('domínio') || lowerMessage.includes('domain')) {
+        // Resposta com verificação de domínio
+        aiResponse = {
+          text: `Perfeito! Vou verificar a disponibilidade do domínio para "${message}". Iniciando análise:`,
+          sender: 'ai',
+          showDomainChecker: true,
+          domainData: {
+            brandName: message,
+            autoStart: true,
+            isActive: true,
+            onStatusChange: (status: string) => {
+              setCurrentStep(`Domain status: ${status}`);
+            }
+          }
+        };
+      } else if (lowerMessage.includes('marca') || lowerMessage.includes('trademark')) {
+        // Resposta com verificação de marca registrada
+        aiResponse = {
+          text: `Vou analisar se "${message}" tem conflitos com marcas registradas. Verificando nos principais órgãos:`,
+          sender: 'ai',
+          showTrademarkChecker: true,
+          trademarkData: {
+            brandName: message,
+            autoStart: true,
+            isActive: true,
+            onStatusChange: (status: string) => {
+              setCurrentStep(`Trademark status: ${status}`);
+            }
+          }
+        };
+      } else if (lowerMessage.includes('social') || lowerMessage.includes('username') || lowerMessage.includes('redes')) {
+        // Resposta com verificação de redes sociais
+        aiResponse = {
+          text: `Verificando disponibilidade do username "${message}" nas principais redes sociais:`,
+          sender: 'ai',
+          showUsernameChecker: true,
+          usernameData: {
+            brandName: message,
+            autoStart: true,
+            isActive: true,
+            onStatusChange: (status: string) => {
+              setCurrentStep(`Social media status: ${status}`);
+            }
+          }
+        };
+      } else if (lowerMessage.includes('completa') || lowerMessage.includes('análise') || lowerMessage.includes('tudo')) {
+        // Resposta com análise completa (todos os componentes)
+        aiResponse = {
+          text: `Excelente! Vou fazer uma análise completa de "${message}". Isso inclui verificação de domínios, marcas registradas e redes sociais:`,
+          sender: 'ai',
+          showDomainChecker: true,
+          showTrademarkChecker: true,
+          showUsernameChecker: true,
+          showAnalysisSummary: true,
+          domainData: {
+            brandName: message,
+            autoStart: true,
+            isActive: true
+          },
+          trademarkData: {
+            brandName: message,
+            autoStart: true,
+            isActive: true
+          },
+          usernameData: {
+            brandName: message,
+            autoStart: true,
+            isActive: true
+          },
+          summaryData: {
+            brandName: message,
+            isVisible: true
+          }
+        };
+      } else {
+        // Resposta padrão com sugestões
+        aiResponse = {
+          text: `Olá! Para analisar "${message}", posso verificar:
+          
+• **Domínios** - Digite "verificar domínio ${message}"
+• **Marcas Registradas** - Digite "verificar marca ${message}"  
+• **Redes Sociais** - Digite "verificar redes sociais ${message}"
+• **Análise Completa** - Digite "análise completa ${message}"
 
-  const renderDetails = () => (
-    <div className="space-y-6">
-      <div className="bg-gray-800 rounded-lg p-6">
-        <h3 className="text-xl font-semibold text-white mb-4">Detalhes da Análise</h3>
-        
-        <div className="space-y-4">
-          <div>
-            <h4 className="text-lg font-medium text-white mb-2">Domínios Disponíveis</h4>
-            <div className="flex flex-wrap gap-2">
-              {reportData.domainAvailability.available.map((domain, index) => (
-                <span key={index} className="bg-green-600 bg-opacity-20 text-green-400 px-3 py-1 rounded-full text-sm">
-                  {reportData.brandName}{domain}
-                </span>
-              ))}
-            </div>
-          </div>
-          
-          <div>
-            <h4 className="text-lg font-medium text-white mb-2">Domínios Indisponíveis</h4>
-            <div className="flex flex-wrap gap-2">
-              {reportData.domainAvailability.unavailable.map((domain, index) => (
-                <span key={index} className="bg-red-600 bg-opacity-20 text-red-400 px-3 py-1 rounded-full text-sm">
-                  {reportData.brandName}{domain}
-                </span>
-              ))}
-            </div>
-          </div>
-          
-          <div>
-            <h4 className="text-lg font-medium text-white mb-2">Marcas Similares</h4>
-            <div className="flex flex-wrap gap-2">
-              {reportData.trademarkStatus.similar.map((trademark, index) => (
-                <span key={index} className="bg-yellow-600 bg-opacity-20 text-yellow-400 px-3 py-1 rounded-full text-sm">
-                  {trademark}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+Qual tipo de verificação você gostaria de fazer primeiro?`,
+          sender: 'ai'
+        };
+      }
+      
+      setMessages(prev => [...prev, aiResponse]);
+      setCurrentStep('Aguardando próxima solicitação');
+    }, 1000);
+  };
+
+  // Verificar se há mensagem inicial do sessionStorage
+  useEffect(() => {
+    const initialMessage = sessionStorage.getItem('initialMessage');
+    if (initialMessage) {
+      // Limpar o sessionStorage
+      sessionStorage.removeItem('initialMessage');
+      // Enviar a mensagem automaticamente
+      handleSendMessage(initialMessage);
+    }
+  }, []);
+
+  // Auto-scroll quando mensagens são adicionadas
+  useEffect(() => {
+    if (chatScrollRef.current) {
+      const timer = setTimeout(() => {
+        chatScrollRef.current?.scrollTo({
+          top: chatScrollRef.current.scrollHeight,
+          behavior: 'smooth'
+        });
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [messages]);
+
+  // Função para mostrar componentes de análise globalmente (opcional)
+  const showAnalysisResults = (analysisType: string, data: any): void => {
+    setShowAnalysisComponents(prev => ({
+      ...prev,
+      [`show${analysisType}`]: true,
+      analysisData: {
+        ...prev.analysisData,
+        [`${analysisType.toLowerCase()}Data`]: data
+      }
+    }));
+  };
 
   return (
-    <div className="w-full h-full bg-gray-900 text-white">
-      {/* Header */}
-      <div className="bg-gray-800 border-b border-gray-700 p-4">
-        <h2 className="text-xl font-semibold text-white">Relatório de Análise</h2>
-        <p className="text-gray-400 text-sm">Marca: {reportData.brandName}</p>
-      </div>
-
-      {/* Tabs */}
-      <div className="bg-gray-800 border-b border-gray-700">
-        <div className="flex space-x-1 p-1">
-          {[
-            { id: 'overview', label: 'Resumo' },
-            { id: 'details', label: 'Detalhes' }
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                activeTab === tab.id
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-400 hover:text-white hover:bg-gray-700'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+    <>
+      <div className="w-full h-full flex flex-col custom-selection" style={{ backgroundColor: '#2F3338' }}>
+        
+        {/* Header */}
+        <div className="flex-shrink-0">
+          <ChatHeader 
+            brandName={brandName} 
+            currentStep={currentStep} 
+          />
         </div>
+
+        {/* History - Container com scroll */}
+        <div 
+          ref={chatScrollRef}
+          className="flex-1 overflow-y-auto"
+        >
+          <ChatHistory 
+            messages={messages} 
+            showAnalysisComponents={showAnalysisComponents}
+          />
+        </div>
+
+        {/* Input */}
+        <div className="flex-shrink-0">
+          <ChatInput onSendMessage={handleSendMessage} />
+        </div>
+
       </div>
 
-      {/* Content */}
-      <div className="p-6 overflow-y-auto flex-1">
-        {activeTab === 'overview' && renderOverview()}
-        {activeTab === 'details' && renderDetails()}
-      </div>
-
-      {/* Estilos personalizados */}
       <style jsx>{`
-        /* Personalização da seleção de texto */
-        ::selection {
+        /* Personalização da seleção de texto - Global */
+        .custom-selection ::selection {
           background-color: rgba(93, 173, 226, 0.4);
           color: #F8FAFC;
         }
         
-        ::-moz-selection {
+        .custom-selection ::-moz-selection {
           background-color: rgba(93, 173, 226, 0.4);
           color: #F8FAFC;
         }
+        
+        @media (max-width: 768px) {
+          .text-5xl {
+            font-size: 2.5rem;
+          }
+        }
       `}</style>
-    </div>
+    </>
   );
 };
 
-export default MainReport;
+export default MainChat;
