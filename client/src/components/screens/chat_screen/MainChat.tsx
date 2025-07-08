@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import ChatHeader from './ChatHeader';
-import ChatHistory from './ChatHistory';
-import ChatInput from './ChatInput';
+import ChatHeader from './components/ui/chat_ui/ChatHeader_ui/ChatHeader';
+import ChatHistory from './components/ui/chat_ui/ChatHistory_ui/ChatHistory';
+import ChatInput from './components/ui/chat_ui/ChatInput_ui/ChatInput';
 
 // Tipos para os dados dos componentes de análise
 interface DomainData {
