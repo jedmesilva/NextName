@@ -55,8 +55,8 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
 
   return (
     <>
-      <div className="fixed bottom-0 left-0 right-0 z-50 rounded-t-3xl border-t bg-input-solid border-medium-gray">
-        <div className="max-w-4xl mx-auto px-4 py-4">
+      <div className="w-full rounded-t-3xl border-t bg-input-solid border-medium-gray">
+        <div className="w-full px-4 py-4">
           {/* Input */}
           <div className="mb-4">
             <textarea
