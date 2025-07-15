@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import MainChat from '../components/screens/chat_screen/MainChat';
 import MainReport from '../components/screens/report_screen/MainReport';
+import Navbar from '../components/common/Navbar'; // Assumindo que você tem um componente Navbar
 
 // Tipos para configuração das telas
 interface ScreenConfig {
@@ -54,6 +55,17 @@ const Workspace: React.FC = () => {
     setScreens(prev => [...prev, screenConfig]);
   };
 
+  // Função para alternar visibilidade de telas
+  const toggleScreenVisibility = (screenId: string): void => {
+    setScreens(prev => 
+      prev.map(screen => 
+        screen.id === screenId 
+          ? { ...screen, visible: !screen.visible }
+          : screen
+      )
+    );
+  };
+
   // Filtrar telas visíveis baseado no tamanho da tela
   const visibleScreens = screens.filter(screen => {
     if (screen.visible) {
@@ -67,32 +79,79 @@ const Workspace: React.FC = () => {
     return false;
   });
 
+  // Separar telas por posição
+  const leftScreens = visibleScreens.filter(screen => screen.position === 'left');
+  const rightScreens = visibleScreens.filter(screen => screen.position === 'right');
+
   return (
-    <div className="w-full h-screen flex overflow-hidden" style={{ 
-      height: '100vh',
-      maxHeight: '100vh',
-      position: 'relative'
-    }}>
-      {/* Container principal das telas */}
-      {visibleScreens.map((screen, index) => {
-        const ScreenComponent = screen.component;
-        const isOnlyScreen = visibleScreens.length === 1;
-        
-        return (
-          <div
-            key={screen.id}
-            className={`${isOnlyScreen || isMobile ? 'w-full' : 'flex-1'} h-full overflow-hidden`}
-            style={{ 
-              width: isOnlyScreen || isMobile ? '100%' : (screen.width || 'auto'),
-              minWidth: visibleScreens.length > 1 && !isMobile ? '300px' : 'auto',
-              height: '100%',
-              maxHeight: '100%'
-            }}
-          >
-            <ScreenComponent />
+    <div 
+      className="w-full flex flex-col overflow-hidden" 
+      style={{ 
+        height: '100vh',
+        maxHeight: '100vh',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0
+      }}
+    >
+      {/* Navbar Superior Fixa */}
+      <div className="w-full h-16 bg-gray-900 border-b border-gray-700 flex-shrink-0 z-10">
+        <Navbar />
+      </div>
+
+      {/* Container Principal - Resto da Tela */}
+      <div className="flex-1 flex overflow-hidden" style={{ height: 'calc(100vh - 4rem)' }}>
+        {/* Área do Chat (Lado Esquerdo) */}
+        <div className={`
+          ${isMobile ? 'w-full' : 'w-1/2 min-w-[300px] max-w-[600px]'}
+          h-full 
+          border-r border-gray-700 
+          flex flex-col 
+          overflow-hidden
+          bg-gray-800
+        `}>
+          {leftScreens.map((screen) => {
+            const ScreenComponent = screen.component;
+            return (
+              <div key={screen.id} className="flex-1 h-full overflow-y-auto overflow-x-hidden">
+                <ScreenComponent />
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Área de Conteúdo (Lado Direito) - Só exibe no desktop */}
+        {!isMobile && (
+          <div className="
+            flex-1 
+            h-full 
+            flex flex-col 
+            overflow-hidden
+            bg-gray-900
+          ">
+            {rightScreens.length > 0 ? (
+              rightScreens.map((screen) => {
+                const ScreenComponent = screen.component;
+                return (
+                  <div key={screen.id} className="flex-1 h-full overflow-y-auto overflow-x-hidden">
+                    <ScreenComponent />
+                  </div>
+                );
+              })
+            ) : (
+              // Placeholder quando não há conteúdo no lado direito
+              <div className="flex-1 flex items-center justify-center text-gray-500 overflow-hidden">
+                <div className="text-center">
+                  <p className="text-lg mb-2">Nenhum conteúdo selecionado</p>
+                  <p className="text-sm">Selecione uma opção no chat para visualizar aqui</p>
+                </div>
+              </div>
+            )}
           </div>
-        );
-      })}
+        )}
+      </div>
     </div>
   );
 };
