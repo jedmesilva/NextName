@@ -8,12 +8,12 @@ export default function Workspace() {
   const [hasContent, setHasContent] = useState(false);
 
   return (
-    <div className="h-screen w-full flex flex-col overflow-hidden">
+    <div className="w-full flex flex-col overflow-hidden workspace-container">
       {/* Navbar fixa no topo */}
       <Navbar />
       
       {/* Container principal que ocupa o resto da tela */}
-      <div className="flex-1 flex mt-16 overflow-hidden">
+      <div className="flex-1 flex overflow-hidden workspace-content">
         {/* Área do Chat - lado esquerdo */}
         <div className="w-1/2 h-full border-r border-gray-700 relative overflow-hidden">
           <MainChat />
@@ -47,6 +47,46 @@ export default function Workspace() {
           )}
         </div>
       </div>
+      
+      <style jsx>{`
+        .workspace-container {
+          height: 100vh;
+          height: 100dvh; /* Usa viewport dinâmico quando disponível */
+        }
+        
+        .workspace-content {
+          padding-top: 4rem; /* Espaço para a navbar (16 = 4rem) */
+        }
+        
+        /* Ajustes para mobile */
+        @media (max-width: 768px) {
+          .workspace-container {
+            height: 100vh;
+            height: 100dvh;
+            /* Evita scroll na página principal */
+            overflow: hidden;
+          }
+          
+          .workspace-content {
+            padding-top: 4rem;
+            height: calc(100vh - 4rem);
+            height: calc(100dvh - 4rem);
+          }
+        }
+        
+        /* Suporte para navegadores que não têm dvh */
+        @supports not (height: 100dvh) {
+          .workspace-container {
+            height: 100vh;
+          }
+          
+          @media (max-width: 768px) {
+            .workspace-content {
+              height: calc(100vh - 4rem);
+            }
+          }
+        }
+      `}</style>
     </div>
   );
 }
