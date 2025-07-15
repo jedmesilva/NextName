@@ -15,7 +15,7 @@ export default function Workspace() {
       {/* Container principal que ocupa o resto da tela */}
       <div className="flex-1 flex mt-16 overflow-hidden">
         {/* Área do Chat - lado esquerdo */}
-        <div className="w-1/2 h-full border-r border-gray-700">
+        <div className="w-1/2 h-full border-r border-gray-700 relative overflow-hidden">
           <MainChat />
         </div>
         

@@ -245,7 +245,6 @@ Qual tipo de verificação você gostaria de fazer primeiro?`,
         /* Container principal com altura fixa consistente */
         .chat-container {
           height: 100%;
-          min-height: 100vh;
           position: relative;
           overflow: hidden;
         }
@@ -289,8 +288,7 @@ Qual tipo de verificação você gostaria de fazer primeiro?`,
           
           .chat-container {
             /* Força altura dinâmica no mobile */
-            height: 100vh;
-            height: 100dvh;
+            height: 100%;
             min-height: unset;
           }
           
