@@ -8,11 +8,20 @@ interface ChatInputProps {
 const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
   const [message, setMessage] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const resetTextareaHeight = (): void => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = '1.5rem'; // altura mínima
+    }
+  };
 
   const handleSendMessage = (): void => {
     if (message.trim()) {
       onSendMessage(message);
       setMessage('');
+      resetTextareaHeight();
     }
   };
 
@@ -60,6 +69,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
           {/* Input */}
           <div className="mb-4">
             <textarea
+              ref={textareaRef}
               value={message}
               onChange={handleInputChange}
               onKeyPress={handleKeyPress}
