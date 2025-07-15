@@ -8,7 +8,7 @@ export default function Workspace() {
   const [hasContent, setHasContent] = useState(false);
 
   return (
-    <div className="w-full flex flex-col overflow-hidden workspace-container">
+    <div className="w-full flex flex-col overflow-hidden workspace-container" style={{ backgroundColor: '#2F3338' }}>
       {/* Navbar fixa no topo */}
       <Navbar />
       
