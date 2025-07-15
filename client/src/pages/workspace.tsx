@@ -6,21 +6,26 @@ import { FileText } from 'lucide-react';
 
 export default function Workspace() {
   const [hasContent, setHasContent] = useState(false);
+  const [activeView, setActiveView] = useState<'chat' | 'content'>('chat');
 
   return (
     <div className="w-full flex flex-col overflow-hidden workspace-container" style={{ backgroundColor: '#2F3338' }}>
-      {/* Navbar fixa no topo */}
-      <Navbar />
+      {/* Navbar fixa no topo com botões de alternância */}
+      <Navbar 
+        activeView={activeView}
+        onViewChange={setActiveView}
+        showMobileToggle={true}
+      />
       
       {/* Container principal que ocupa o resto da tela */}
       <div className="flex-1 flex overflow-hidden workspace-content">
         {/* Área do Chat - lado esquerdo */}
-        <div className="w-1/2 h-full border-r border-gray-700 relative overflow-hidden">
+        <div className={`chat-area w-1/2 h-full border-r border-gray-700 relative overflow-hidden ${activeView === 'chat' ? 'mobile-active' : 'mobile-hidden'}`}>
           <MainChat />
         </div>
         
         {/* Área de Conteúdo - lado direito */}
-        <div className="w-1/2 h-full overflow-y-auto" style={{ backgroundColor: '#2F3338' }}>
+        <div className={`content-area w-1/2 h-full overflow-y-auto ${activeView === 'content' ? 'mobile-active' : 'mobile-hidden'}`} style={{ backgroundColor: '#2F3338' }}>
           {hasContent ? (
             <BrandArtifact />
           ) : (
@@ -71,6 +76,24 @@ export default function Workspace() {
             padding-top: 4rem;
             height: calc(100vh - 4rem);
             height: calc(100dvh - 4rem);
+          }
+          
+          /* No mobile, cada área ocupa 100% da largura */
+          .chat-area,
+          .content-area {
+            width: 100%;
+            border-right: none;
+          }
+          
+          /* Esconder a área inativa no mobile */
+          .mobile-hidden {
+            display: none;
+          }
+          
+          /* Mostrar apenas a área ativa no mobile */
+          .mobile-active {
+            display: flex;
+            flex-direction: column;
           }
         }
         
