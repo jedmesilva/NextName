@@ -271,7 +271,7 @@ export default function NextNameApp() {
         </div>
       </div>
       
-      <style jsx>{`
+      <style>{`
         .placeholder\\:text-gray-400::placeholder {
           color: rgba(248, 250, 252, 0.65) !important;
         }
